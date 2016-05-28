@@ -1,0 +1,22 @@
+{
+  "name": "youtube-history",
+  "version": "1.0.0",
+  "description": "Pull entire youtube history from API v2.0 - stores in Mongo DB (Deduplicates) and visualised in UI for querying",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Craig Bojko",
+  "license": "ISC",
+  "dependencies": {
+    "youtube-api": "^2.0.2"
+  },
+  "devDependencies": {
+    "bug-killer": "^4.2.3",
+    "fs": "0.0.2",
+    "lien": "^1.0.2",
+    "opn": "^4.0.2",
+    "pretty-bytes": "^3.0.1",
+    "r-json": "^1.2.3"
+  }
+}
