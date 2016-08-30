@@ -5,6 +5,8 @@ var Logger = require('bug-killer')
 var opn = require('opn')
 
 var config = require('./config/config')
+var _token
+var dataBuffer = []
 
 // Init lien server
 var server = new Lien({
@@ -50,24 +52,62 @@ server.addPage('/oauth2callback', function (lien) {
       console.log(tokens)
     })
     oauth.setCredentials(tokens)
+    _token = tokens
+    getData(lien)
+  })
+})
 
-    var req = Youtube.playlistItems.list({
+var count = 0
+function getData (lien, page) {
+  if (count >= 1) {
+    console.log('DONE')
+    lien.end(JSON.stringify(dataBuffer))
+    process.exit();
+  }
+  if (!page) {
+    count++
+    Youtube.playlistItems.list({
       part: "snippet,status",
       playlistId: 'HLrPnpeFRBDXagnQRM8YOkrQ',
-      maxResults: 10
+      publishedBefore: '2015-01-01',
+      maxResults: 50
     }, (err, data) => {
       if (err) {
         console.error(err)
-        lien.end(JSON.stringify(data))
+        lien.end(JSON.stringify(dataBuffer))
         process.exit();
       } else {
-        console.log("Done.")
-        lien.end(JSON.stringify(data))
-        process.exit();
+        console.log('COUNT: %s', count)
+        dataBuffer.push(data)
+        if (data.nextPageToken) {
+          console.log('GETTING NEXT PAGE: %s', data.nextPageToken)
+          getData(lien, data.nextPageToken)
+        }
       }
     })
-  })
-})
+  } else {
+    count++
+    Youtube.playlistItems.list({
+      part: "snippet,status",
+      playlistId: 'HLrPnpeFRBDXagnQRM8YOkrQ',
+      publishedBefore: '2015-01-01',
+      pageToken: page,
+      maxResults: 50
+    }, (err, data) => {
+      if (err) {
+        console.error(err)
+        lien.end(JSON.stringify(dataBuffer))
+        process.exit();
+      } else {
+        console.log('COUNT: %s', count)
+        dataBuffer.push(data)
+        if (data.nextPageToken) {
+          getData(lien, data.nextPageToken)
+        }
+      }
+    })
+  }
+}
 
 opn(oauth.generateAuthUrl({
   access_type: 'offline',
