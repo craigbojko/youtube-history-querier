@@ -11,6 +11,7 @@ class VideoView():
         self.duration = ''
         self.date = ''
         self.time = ''
+        self.datetime = ''
 
     def setName(self, n):
         self.name = n
@@ -66,14 +67,24 @@ class VideoView():
         else:
             return ''
 
+    def setDateTime(self, t):
+        self.datetime = t
+
+    def getDateTime(self):
+        if (self.datetime is not None):
+            return self.datetime
+        else:
+            return ''
+
     def printContent(self):
         msg = str(colored('NAME: ', 'green') + self.getName()) + \
             str(colored('\nDate: ', 'green') + self.getDate()) + \
             str(colored('\nTime: ', 'green') + self.getTime()) + \
+            str(colored('\nDateTime: ', 'green') + str(self.getDateTime())) + \
             str(colored('\nDuration: ', 'green') + self.getDuration()) + \
             str(colored('\nChannel: ', 'green') + self.getChannel()) + \
             str(colored('\nLink: ', 'green') + self.getLink())
-        print('** -------------------------- **')
+        #  print('** -------------------------- **')
         print(msg)
         print('** -------------------------- **')
         return msg
