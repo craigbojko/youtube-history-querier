@@ -11,3 +11,9 @@ class VideoView():
 
     def getName(self):
         return self.name
+
+    def setDate(self, d):
+        self.date = d
+
+    def getDate(self):
+        return self.date
