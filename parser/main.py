@@ -12,7 +12,6 @@ from pymongo import MongoClient
 import datetime
 import time
 import re
-import json
 
 videoViews = []
 currView = None
@@ -125,12 +124,12 @@ start = time.time()
 print("START TIME:::", start)
 
 parser = MyHTMLParser()
-#  with open('google_activity_html_dump.html', 'r') as f:
-with open('test3.html', 'r') as f:
+#  with open('test3.html', 'r') as f:
+with open('google_activity_html_dump.html', 'r') as f:
     read_data = f.read()
     f.closed
 
-#  parser.feed(read_data)
+parser.feed(read_data)
 
 #  """ Uncomment for date printouts
 dateRegex = re.compile('([A-z]+)? (\d+)?(, \d+)?')
@@ -140,19 +139,21 @@ for i in videoViews:
     t = i.getTime()
     dateMatch = dateRegex.match(d)
     timeMatch = timeRegex.match(t)
-    ""
+    """
     if (dateMatch):
         print(colored(i.getName() + ':::', 'green'))
         print('Month: ' + str(dateMatch.group(1)) + ' | Date: ' + str(dateMatch.group(2)) + ' | Year: ' + str(dateMatch.group(3)))
     if (timeMatch):
         print('Time: Hour::' + str(timeMatch.group(1)) + ' | MIN:: ' + str(timeMatch.group(2)) + ' | AM/PM:: ' + str(timeMatch.group(3)))
-    ""
+    """
 
     if (dateMatch is not None and dateMatch.group(2) is not None and not isinstance(dateMatch.group(2), int)):
         _year = 2016
         _month = 1
         if (dateMatch.group(3) is not None):
-            _year = int(dateMatch.group(3))
+            regex = re.compile(', ')
+            _year = re.sub(regex, "", dateMatch.group(3))
+            _year = int(_year)
 
         for index, month in enumerate(months):
             if (month.lower().find(str(dateMatch.group(1)).lower()) != -1):
@@ -166,19 +167,27 @@ for i in videoViews:
             _hour = _hour + offset
 
         dateTime = datetime.datetime(_year, _month, _date, _hour, _minute)
-        i.setDateTime(dateTime)
-#  """
-"""
-for i in videoViews:
-    i.printContent()
-print(json.dumps(videoViews[0].__dict__))
-
+        _dateTime = ''
+        if (dateTime is not None):
+            _dateTime = dateTime.isoformat()
+        i.setDateTime(_dateTime)
 
 client = MongoClient()
-db = client.test
-print(db)
-#  """
+db = client.youtube_history
+countSuccess = 0
+countFail = 0
+
+for index, i in enumerate(videoViews):
+    print('INDEX: ', index)
+    i.printContent()
+    result = db.history.insert_one(i.__dict__)
+    if (result.inserted_id is not None):
+        countSuccess += 1
+    else:
+        countFail += 1
 
 end = time.time()
+print(colored('TOTAL SUCCESS INSERTS:::', 'magenta'), countSuccess)
+print(colored('TOTAL FAIL INSERTS:::', 'magenta'), countFail)
 print(colored('TOTAL VIDEO VIEWS:::', 'magenta'), len(videoViews))
 print(colored('END TIME DIFF:::', 'magenta'), end - start)
