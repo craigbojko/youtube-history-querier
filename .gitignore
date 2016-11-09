@@ -2,3 +2,5 @@
 config/config.js
 node_modules/
 __pycache__
+
+*.activity.*

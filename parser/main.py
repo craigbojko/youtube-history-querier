@@ -101,31 +101,32 @@ class MyHTMLParser(HTMLParser):
                         currView.setLink(attr[1])
                 dataRow = False
                 currAttrs = None
-                #  print("Encountered some data  :", data)
+                print("Encountered some data  :", data)
             elif (dataRow is 2):
                 currDate = data
                 dataRow = False
-                #  print("Encountered a date  :", data)
+                print("Encountered a date  :", data)
             elif (dataRow is 3):
                 currView.setDuration(data.strip())
                 dataRow = False
-                #  print("Encountered a duration  :", data)
+                print("Encountered a duration  :", data)
             elif (dataRow is 4):
                 currView.setChannel(data.strip())
                 dataRow = False
-                #  print("Encountered a channel  :", data)
+                print("Encountered a channel  :", data)
             elif (dataRow is 5):
                 if (len(data.strip()) > 1 and data.find('AM') != -1 or data.find('PM') != -1):
                     currView.setTime(data.strip())
                     dataRow = False
-                    #  print("Encountered a time  :", data)
+                    print("Encountered a time  :", data)
 
 start = time.time()
 print("START TIME:::", start)
 
 parser = MyHTMLParser()
-#  with open('test3.html', 'r') as f:
-with open('google_activity_html_dump.html', 'r') as f:
+#with open('test3.html', 'r') as f:
+#with open('google_activity_html_dump.html', 'r') as f:
+with open('activity_dump_1478196284025_1.html', 'r') as f:
     read_data = f.read()
     f.closed
 
@@ -177,14 +178,14 @@ db = client.youtube_history
 countSuccess = 0
 countFail = 0
 
-for index, i in enumerate(videoViews):
-    print('INDEX: ', index)
-    i.printContent()
-    result = db.history.insert_one(i.__dict__)
-    if (result.inserted_id is not None):
-        countSuccess += 1
-    else:
-        countFail += 1
+# for index, i in enumerate(videoViews):
+#     print('INDEX: ', index)
+#     i.printContent()
+#     result = db.history.insert_one(i.__dict__)
+#     if (result.inserted_id is not None):
+#         countSuccess += 1
+#     else:
+#         countFail += 1
 
 end = time.time()
 print(colored('TOTAL SUCCESS INSERTS:::', 'magenta'), countSuccess)
