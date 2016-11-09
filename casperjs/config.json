@@ -1,0 +1,5 @@
+{
+	"sslProtocol": "any",
+	"ignoreSslErrors":true,
+	"maxDiskCacheSize": 1000
+}

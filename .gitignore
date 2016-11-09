@@ -1,5 +1,6 @@
 .youtubeToken
 config/config.js
+config/google_credentials.js
 node_modules/
 __pycache__
 
