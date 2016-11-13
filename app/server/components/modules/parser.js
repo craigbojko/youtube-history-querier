@@ -1,3 +1,4 @@
+var sha1 = require('sha1')
 
 module.exports = function getVideoElements (html) {
   // JQuery setup for server
@@ -16,21 +17,28 @@ module.exports = function getVideoElements (html) {
     var $videoBlocks = $dateBlock.find('.fp-display-item-holder')
     $videoBlocks.each(function (index, videoElement) {
       var $video = $(videoElement)
+      var name = $video.find('h4 > a').text().trim()
+      var link = $video.find('h4 > a').attr('href').trim()
+
       var nowYear = (new Date()).getFullYear()
       var date = $dateBlock.find('.fp-date-block h2').text().trim()
       var time = $video.find('div.fp-display-block-details span:first').text().trim()
       var dateTime = new Date(date + ' ' + nowYear + ' ' + time)
+      
       var data = {
-        title: $video.find('h4 > a').text().trim(),
-        link: $video.find('h4 > a').attr('href').trim(),
-        image: $video.find('img.fp-display-block-video-thumbnail').attr('src'),
+        hash: sha1(dateTime.getTime().toString() + name + link),
+        name: name,
+        link: link,
         channel: $video.find('.fp-display-block-yt-channel').text().trim(),
+        duration: $video.find('.fp-display-item-yt-duration').text().trim(),
+        image: $video.find('img.fp-display-block-video-thumbnail').attr('src'),
         date: date,
         time: time,
-        dateTime: dateTime.getTime()
+        dateTime: dateTime.toISOString(),
+        timestamp: dateTime.getTime()
       }
       videos.push(data)
     })
   })
-  return JSON.stringify(videos)
+  return videos
 }

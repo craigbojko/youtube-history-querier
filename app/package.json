@@ -9,8 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "Promise": "^1.0.5",
+    "colors": "^1.1.2",
     "jquery": "^2.0.0",
     "jsdom": "^9.8.3",
+    "mongoose": "^4.6.7",
+    "sha1": "^1.1.1",
     "spooky": "^0.2.5"
   }
 }
