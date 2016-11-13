@@ -12,6 +12,7 @@ from pymongo import MongoClient
 import datetime
 import time
 import re
+import hashlib
 
 videoViews = []
 currView = None
@@ -73,6 +74,10 @@ class MyHTMLParser(HTMLParser):
             for attr in attrs:
                 if (attr[0] == 'ng-if' and attr[1] != '' and attr[1].find('::!summaryItem') != -1):
                     dataRow = 5
+        elif (tag == 'img'):
+            for attr in attrs:
+                if (attr[0] == 'src' and attr[1] != '' and attr[1].find('ytimg') != -1):
+                    currView.setImage(attr[1])
         else:
             dataRow = False
 
@@ -101,36 +106,39 @@ class MyHTMLParser(HTMLParser):
                         currView.setLink(attr[1])
                 dataRow = False
                 currAttrs = None
-                print("Encountered some data  :", data)
+                # print("Encountered some data  :", data)
             elif (dataRow is 2):
                 currDate = data
                 dataRow = False
-                print("Encountered a date  :", data)
+                # print("Encountered a date  :", data)
             elif (dataRow is 3):
                 currView.setDuration(data.strip())
                 dataRow = False
-                print("Encountered a duration  :", data)
+                # print("Encountered a duration  :", data)
             elif (dataRow is 4):
                 currView.setChannel(data.strip())
                 dataRow = False
-                print("Encountered a channel  :", data)
+                # print("Encountered a channel  :", data)
             elif (dataRow is 5):
                 if (len(data.strip()) > 1 and data.find('AM') != -1 or data.find('PM') != -1):
                     currView.setTime(data.strip())
                     dataRow = False
-                    print("Encountered a time  :", data)
+                    # print("Encountered a time  :", data)
 
 start = time.time()
 print("START TIME:::", start)
 
 parser = MyHTMLParser()
-#with open('test3.html', 'r') as f:
-#with open('google_activity_html_dump.html', 'r') as f:
-with open('activity_dump_1478196284025_1.html', 'r') as f:
-    read_data = f.read()
+
+with open('google_activity-origin-aug2016.activity.html', 'r') as f:
+    read_data_1 = f.read()
+    f.closed
+with open('google_activity-aug-nov2016.activity.html', 'r') as f:
+    read_data_2 = f.read()
     f.closed
 
-parser.feed(read_data)
+parser.feed(read_data_1)
+parser.feed(read_data_2)
 
 #  """ Uncomment for date printouts
 dateRegex = re.compile('([A-z]+)? (\d+)?(, \d+)?')
@@ -155,7 +163,8 @@ for i in videoViews:
             regex = re.compile(', ')
             _year = re.sub(regex, "", dateMatch.group(3))
             _year = int(_year)
-
+        else:
+            i.setDate(i.getDate() + ', 2016')
         for index, month in enumerate(months):
             if (month.lower().find(str(dateMatch.group(1)).lower()) != -1):
                 _month = index + 1
@@ -169,26 +178,39 @@ for i in videoViews:
 
         dateTime = datetime.datetime(_year, _month, _date, _hour, _minute)
         _dateTime = ''
+        _timestamp = ''
+        _hash = ''
         if (dateTime is not None):
             _dateTime = dateTime.isoformat()
-        i.setDateTime(_dateTime)
+            _timestamp = (dateTime.timestamp() + 3600) * 1000
+            _hash = hashlib.sha1()
+            _hash.update((str(_timestamp) + i.getName() + i.getLink()).encode())
+        i.setDateTime(_dateTime + '.000Z')
+        i.setTimestamp(str(_timestamp)[:-2])
+        i.setHash(str(_hash.hexdigest()))
 
 client = MongoClient()
 db = client.youtube_history
 countSuccess = 0
+countUpdate = 0
 countFail = 0
 
-# for index, i in enumerate(videoViews):
-#     print('INDEX: ', index)
-#     i.printContent()
-#     result = db.history.insert_one(i.__dict__)
-#     if (result.inserted_id is not None):
-#         countSuccess += 1
-#     else:
-#         countFail += 1
+for index, i in enumerate(videoViews):
+    # print('INDEX: ', index)
+    # i.printContent()
+    # result = db.history.insert_one(i.__dict__)
+    result = db.history.update({"hash": i.getHash()}, i.__dict__, True)
+    # print(result)
+    if ('upserted' in result and result['upserted'] is not None):
+        countSuccess += 1
+    elif ('updatedExisting' in result and result['updatedExisting'] is True):
+        countUpdate += 1
+    else:
+        countFail += 1
 
 end = time.time()
 print(colored('TOTAL SUCCESS INSERTS:::', 'magenta'), countSuccess)
+print(colored('TOTAL UPDATE INSERTS:::', 'magenta'), countUpdate)
 print(colored('TOTAL FAIL INSERTS:::', 'magenta'), countFail)
 print(colored('TOTAL VIDEO VIEWS:::', 'magenta'), len(videoViews))
 print(colored('END TIME DIFF:::', 'magenta'), end - start)
