@@ -8,6 +8,7 @@ class VideoView():
         self.hash = ''
         self.name = ''
         self.link = ''
+        self.videoId = ''
         self.channel = ''
         self.duration = ''
         self.image = ''
@@ -40,6 +41,15 @@ class VideoView():
     def getLink(self):
         if (self.link is not None):
             return self.link
+        else:
+            return ''
+
+    def setVideoId(self, id):
+        self.videoId = id
+
+    def getVideoId(self):
+        if (self.videoId is not None):
+            return self.videoId
         else:
             return ''
 

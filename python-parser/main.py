@@ -130,14 +130,14 @@ print("START TIME:::", start)
 
 parser = MyHTMLParser()
 
-with open('google_activity-origin-aug2016.activity.html', 'r') as f:
-    read_data_1 = f.read()
-    f.closed
+# with open('google_activity-origin-aug2016.activity.html', 'r') as f:
+#     read_data_1 = f.read()
+#     f.closed
 with open('google_activity-aug-nov2016.activity.html', 'r') as f:
     read_data_2 = f.read()
     f.closed
 
-parser.feed(read_data_1)
+# parser.feed(read_data_1)
 parser.feed(read_data_2)
 
 #  """ Uncomment for date printouts
@@ -155,6 +155,15 @@ for i in videoViews:
     if (timeMatch):
         print('Time: Hour::' + str(timeMatch.group(1)) + ' | MIN:: ' + str(timeMatch.group(2)) + ' | AM/PM:: ' + str(timeMatch.group(3)))
     """
+    videoId = ''
+    link = i.getLink()
+    idRegex = re.search(r'watch\?v=([A-z0-9-]+)', link, re.I)
+    if (idRegex):
+        videoId = idRegex.group(1)
+    if (videoId):
+        i.setVideoId(videoId)
+    else:
+        i.setVideoId('searchquery')
 
     if (dateMatch is not None and dateMatch.group(2) is not None and not isinstance(dateMatch.group(2), int)):
         _year = 2016

@@ -19,6 +19,7 @@ module.exports = function getVideoElements (html) {
       var $video = $(videoElement)
       var name = $video.find('h4 > a').text().trim()
       var link = $video.find('h4 > a').attr('href').trim()
+      var videoId = link.match(/watch\?v=([A-z0-9-]+)/) && link.match(/watch\?v=([A-z0-9]+)/).length && link.match(/watch\?v=([A-z0-9]+)/)[1]
 
       var nowYear = (new Date()).getFullYear()
       var date = $dateBlock.find('.fp-date-block h2').text().trim()
@@ -29,6 +30,7 @@ module.exports = function getVideoElements (html) {
         hash: sha1(dateTime.getTime().toString() + name + link),
         name: name,
         link: link,
+        videoId: videoId,
         channel: $video.find('.fp-display-block-yt-channel').text().trim(),
         duration: $video.find('.fp-display-item-yt-duration').text().trim(),
         image: $video.find('img.fp-display-block-video-thumbnail').attr('src'),
