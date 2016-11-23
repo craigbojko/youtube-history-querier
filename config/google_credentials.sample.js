@@ -1,4 +1,5 @@
 module.exports = {
   username: 'email',
-  password: 'pass'
+  password: 'pass',
+  ytKey: 'key'
 }

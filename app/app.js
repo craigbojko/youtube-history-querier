@@ -2,11 +2,12 @@
 * @Author: Craig
 * @Date:   2016-11-11 12:24:16
 * @Last Modified by:   Craig
-* @Last Modified time: 2016-11-13 19:16:49
+* @Last Modified time: 2016-11-22 17:04:25
 */
 
 var creds = require('../config/google_credentials')
 var Activity = require('./server/components/myactivity-ingest')
+var VideoMetaData = require('./server/components/metadata-ingest')
 var MongoDB = require('./server/components/mongo')
 var writeToFile = false
 
@@ -15,7 +16,27 @@ var countUpdate = 0
 var countFail = 0
 
 var historyCollection = MongoDB('ytHistory')
-runSpookyScraping()
+var metadataCollection = MongoDB('ytMetadata')
+// runSpookyScraping()
+// runMetadataRequests()
+historyCollection.aggregate([
+  {
+    $match: {
+      videoId: 'ogMNV33AhCY'
+    }
+  }, {
+    $lookup: {
+      from: 'metadata',
+      localField: 'videoId',
+      foreignField: 'id',
+      as: 'metadata'
+    }
+  }
+], function (err, result) {
+  console.log(err)
+  console.log(JSON.stringify(result))
+})
+
 
 /**
  * Initialises SpookyJS for myactivity page parsing
@@ -59,6 +80,40 @@ function insertToMongo (activityObj, index, dataArr) {
         } else {
           countSuccess++
           // console.log('SUCCESS: %s', countSuccess)
+        }
+        resolve(doc)
+      }
+    })
+  })
+}
+
+var metadataSuccess = 0
+var metadataUpdate = 0
+var metadataFail = 0
+function runMetadataRequests () {
+  var id = 'ogMNV33AhCY'
+  VideoMetaData.getSingleVideoMeta(id, function (metadata) {
+    insertMetadtaToMongo(metadata).then(function () {
+      console.log('METADATA ACTIVITY PERSISTED: SUCCESS: %s UPDATE: %s FAIL: %s', metadataSuccess, metadataUpdate, metadataFail)
+      process.exit()
+    })
+  })
+}
+
+function insertMetadtaToMongo (metadataObj) {
+  return new Promise(function (resolve, reject) {
+    metadataCollection.findOneAndUpdate({id: metadataObj.id}, metadataObj, {upsert: true}, function (err, doc) {
+      if (err) {
+        console.error('ERROR IN SAVING METADATA: %s :: ', metadataObj.id, err)
+        metadataFail++
+        reject(err)
+      } else {
+        if (doc) {
+          metadataUpdate++
+          // console.log('UPDATE: %s', metadataUpdate)
+        } else {
+          metadataSuccess++
+          // console.log('SUCCESS: %s', metadataSuccess)
         }
         resolve(doc)
       }

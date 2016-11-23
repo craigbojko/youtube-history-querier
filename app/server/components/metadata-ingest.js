@@ -1,10 +1,18 @@
 
-var Youtube = require('youtube-api')
+var VideoMeta = require('./modules/videoMetaReq')
 
 module.exports = {
-  getVideoMeta: getVideoMeta
+  getSingleVideoMeta: getSingleVideoMeta
 }
 
-function getVideoMeta (activityObj) {
-  
+function getSingleVideoMeta (id, callback) {
+  VideoMeta.reqVideoMeta(id, function (err, data) {
+    if (err) {
+      console.error(err)
+      return
+    }
+
+    var content = data.items && data.items.length && data.items[0]
+    callback(content)
+  })
 }
