@@ -2,7 +2,7 @@
 * @Author: Craig
 * @Date:   2016-11-11 12:24:16
 * @Last Modified by:   Craig
-* @Last Modified time: 2016-11-22 17:04:25
+* @Last Modified time: 2016-11-23 16:34:12
 */
 
 var creds = require('../config/google_credentials')
@@ -18,25 +18,14 @@ var countFail = 0
 var historyCollection = MongoDB('ytHistory')
 var metadataCollection = MongoDB('ytMetadata')
 // runSpookyScraping()
-// runMetadataRequests()
-historyCollection.aggregate([
-  {
-    $match: {
-      videoId: 'ogMNV33AhCY'
-    }
-  }, {
-    $lookup: {
-      from: 'metadata',
-      localField: 'videoId',
-      foreignField: 'id',
-      as: 'metadata'
-    }
-  }
-], function (err, result) {
-  console.log(err)
+// runMetadataRequests('FOlPXtXTSXc')
+require('./server/components/queries/videoById').query('FOlPXtXTSXc').then(function (result) {
   console.log(JSON.stringify(result))
+  process.exit()
+}, function (fail) {
+  console.error(fail)
+  process.exit()
 })
-
 
 /**
  * Initialises SpookyJS for myactivity page parsing
@@ -90,8 +79,7 @@ function insertToMongo (activityObj, index, dataArr) {
 var metadataSuccess = 0
 var metadataUpdate = 0
 var metadataFail = 0
-function runMetadataRequests () {
-  var id = 'ogMNV33AhCY'
+function runMetadataRequests (id) {
   VideoMetaData.getSingleVideoMeta(id, function (metadata) {
     insertMetadtaToMongo(metadata).then(function () {
       console.log('METADATA ACTIVITY PERSISTED: SUCCESS: %s UPDATE: %s FAIL: %s', metadataSuccess, metadataUpdate, metadataFail)
