@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "Promise": "^1.0.5",
+    "promise": "^7.1.1",
     "bug-killer": "^4.2.5",
     "colors": "^1.1.2",
     "jquery": "^2.0.0",
@@ -20,5 +20,10 @@
     "sha1": "^1.1.1",
     "spooky": "^0.2.5",
     "youtube-api": "^2.0.4"
+  },
+  "devDependencies": {
+    "colors": "^1.1.2",
+    "standard": "^8.6.0",
+    "standard-format": "^2.2.4"
   }
 }
