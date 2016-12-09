@@ -11,35 +11,42 @@ module.exports = {
   reqVideoMeta: reqVideoMeta
 }
 
-function reqVideoMeta (id, callback) {
+function reqVideoMeta (id) {
   params = {
     key: API_KEY,
     part: 'contentDetails,snippet',
     id: id
   }
 
-  var compiledURL = URL + 'videos' + '?' + queryString.stringify(params)  
-  requestVideoMeta(compiledURL, callback)
+  var compiledURL = URL + 'videos' + '?' + queryString.stringify(params)
+  return requestVideoMeta(compiledURL)
 }
 
-function requestVideoMeta (url, callback) {
-  request(url, function (error, response, body) {
-    if (error) {
-      callback(error)
-    } else {
-      var data = {}
-      try {
-        data = JSON.parse(body)
-      } catch(e) {
-        data = {}
-      }
-      
-      if (response.statusCode == 200) {
-        callback(null, data)
+function requestVideoMeta (url) {
+  // console.log('QUERYING: %s', url)
+  return new Promise(function (resolve, reject) {
+    request(url, function (error, response, body) {
+      if (error) {
+        // console.log(error)
+        reject(error)
       } else {
-        callback(data.error)
+        var data = {}
+        try {
+          data = JSON.parse(body)
+        } catch(e) {
+          // console.log(e)
+          data = {}
+        }
+        
+        // console.log('STATUS CODE: %s', response.statusCode)
+        if (response.statusCode === 200) {
+          resolve(data)
+        } else {
+          // console.log(data.error)
+          reject(data.error)
+        }
       }
-    }
+    })
   })
 }
 
