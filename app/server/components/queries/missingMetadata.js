@@ -2,7 +2,7 @@
 * @Author: Craig
 * @Date:   2016-11-23 16:30:56
 * @Last Modified by:   Craig
-* @Last Modified time: 2016-11-23 16:33:18
+* @Last Modified time: 2016-11-24 15:01:46
 */
 
 module.exports = {
@@ -17,7 +17,11 @@ function queryMissingMetadata () {
   var MongoDB = require('../mongo')
   var historyCollection = MongoDB('ytHistory')
   var missingMetaQuery = historyCollection.aggregate([{
-    $limit: 50
+  //   $limit: 50
+  // }, {
+    $match: {
+      'videoId': {$not: /searchquery/}
+    }
   }, {
     $lookup: {
       from:'metadata',
@@ -29,7 +33,7 @@ function queryMissingMetadata () {
     $match: {
       'metadata': {
         $lt: [
-        'metadata', null
+          'metadata', null
         ]
       }
     }

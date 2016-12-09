@@ -2,9 +2,10 @@
 * @Author: Craig
 * @Date:   2016-11-11 12:24:16
 * @Last Modified by:   Craig
-* @Last Modified time: 2016-11-23 16:34:12
+* @Last Modified time: 2016-11-24 17:34:05
 */
 
+require('colors')
 var creds = require('../config/google_credentials')
 var Activity = require('./server/components/myactivity-ingest')
 var VideoMetaData = require('./server/components/metadata-ingest')
@@ -19,11 +20,10 @@ var historyCollection = MongoDB('ytHistory')
 var metadataCollection = MongoDB('ytMetadata')
 // runSpookyScraping()
 // runMetadataRequests('FOlPXtXTSXc')
-require('./server/components/queries/videoById').query('FOlPXtXTSXc').then(function (result) {
-  console.log(JSON.stringify(result))
-  process.exit()
-}, function (fail) {
-  console.error(fail)
+var MetadataRoutine = require('./server/routines/metadata.routine')
+MetadataRoutine().then(function (res) {
+  console.log('ROUTINE COMPLETE.'.green)
+  console.log(JSON.stringify(res).green)
   process.exit()
 })
 
@@ -76,49 +76,3 @@ function insertToMongo (activityObj, index, dataArr) {
   })
 }
 
-var metadataSuccess = 0
-var metadataUpdate = 0
-var metadataFail = 0
-function runMetadataRequests (id) {
-  VideoMetaData.getSingleVideoMeta(id, function (metadata) {
-    insertMetadtaToMongo(metadata).then(function () {
-      console.log('METADATA ACTIVITY PERSISTED: SUCCESS: %s UPDATE: %s FAIL: %s', metadataSuccess, metadataUpdate, metadataFail)
-      process.exit()
-    })
-  })
-}
-
-function insertMetadtaToMongo (metadataObj) {
-  return new Promise(function (resolve, reject) {
-    metadataCollection.findOneAndUpdate({id: metadataObj.id}, metadataObj, {upsert: true}, function (err, doc) {
-      if (err) {
-        console.error('ERROR IN SAVING METADATA: %s :: ', metadataObj.id, err)
-        metadataFail++
-        reject(err)
-      } else {
-        if (doc) {
-          metadataUpdate++
-          // console.log('UPDATE: %s', metadataUpdate)
-        } else {
-          metadataSuccess++
-          // console.log('SUCCESS: %s', metadataSuccess)
-        }
-        resolve(doc)
-      }
-    })
-  })
-}
-
-function testQuery () {
-  var MongoCollection = MongoDB('ytHistory')
-  MongoCollection.find({
-    'name': new RegExp('evanescence.*lithium', "i")
-  }).exec(function (err, doc) {
-    if (err) {
-      console.error(err)
-    } else {
-      console.log(doc)
-    }
-    process.exit()
-  })
-}
