@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "promise": "^7.1.1",
     "bug-killer": "^4.2.5",
     "colors": "^1.1.2",
     "jquery": "^2.0.0",
@@ -17,8 +16,10 @@
     "lien": "^1.5.0",
     "mongoose": "^4.6.7",
     "opn": "^4.0.2",
+    "promise": "^7.1.1",
     "sha1": "^1.1.1",
     "spooky": "^0.2.5",
+    "tiny-jsonrpc": "^2.0.1",
     "youtube-api": "^2.0.4"
   },
   "devDependencies": {

@@ -1,8 +1,8 @@
 /*
 * @Author: Craig
 * @Date:   2016-11-11 12:24:16
-* @Last Modified by:   Craig
-* @Last Modified time: 2016-11-24 17:34:05
+* @Last Modified by:   Craig Bojko
+* @Last Modified time: 2017-09-30 16:09:15
 */
 
 require('colors')
@@ -18,14 +18,14 @@ var countFail = 0
 
 var historyCollection = MongoDB('ytHistory')
 var metadataCollection = MongoDB('ytMetadata')
-// runSpookyScraping()
+runSpookyScraping()
 // runMetadataRequests('FOlPXtXTSXc')
-var MetadataRoutine = require('./server/routines/metadata.routine')
-MetadataRoutine().then(function (res) {
-  console.log('ROUTINE COMPLETE.'.green)
-  console.log(JSON.stringify(res).green)
-  process.exit()
-})
+// var MetadataRoutine = require('./server/routines/metadata.routine')
+// MetadataRoutine().then(function (res) {
+//   console.log('ROUTINE COMPLETE.'.green)
+//   console.log(JSON.stringify(res).green)
+//   process.exit()
+// })
 
 /**
  * Initialises SpookyJS for myactivity page parsing
@@ -44,8 +44,15 @@ function scrapingComplete (ytData) {
 
 function analyseData (data) {
   var promiseArr = []
-  
+  var monthMap = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
   data.forEach(function (activityObj, index, dataArr) {
+    if (activityObj && activityObj.date && ~activityObj.date.toLowerCase().indexOf('yesterday')) {
+      var now = new Date().getTime()
+      var yesterday = new Date(now - 86400000)
+      activityObj.date = '' + monthMap[yesterday.getMonth()] + ' ' + yesterday.getDate()
+      console.log('CONVERTING Yesterday to %s', activityObj.date)
+    }
     promiseArr.push(insertToMongo(activityObj, index, dataArr))
   })
 
