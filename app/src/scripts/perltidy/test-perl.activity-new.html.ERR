@@ -1,0 +1,90 @@
+Perltidy version is 20240202
+
+test-perl.activity-new.html: Begin Error Output Stream
+
+1: ... class="cKWlYc"><div jsname="bN97Pc" role="list"><div jsname="i6C ...
+                                  -------- ^
+found bareword where operator expected (previous token underlined)
+
+1: ... v class="NaDVud"><h2 class="rp10kf">Today</h2></div><div class=" ...
+                        -------------------^
+found bareword where operator expected (previous token underlined)
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'path'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'svg'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+
+1: ... RDsffd"><span class="DPvwYc GABQrf" aria-hidden="true"></span>< ...
+                           --------------- ^
+found bareword where operator expected (previous token underlined)
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+
+1: ... iv></div><c-wiz jsrenderer="TYlFUd" class="FcScvd" jslog="64793; ...
+                                  -------- ^
+found bareword where operator expected (previous token underlined)
+
+1: ...  jsrenderer="TYlFUd" class="FcScvd" jslog="64793; track:impressi ...
+                                  -------- ^
+found bareword where operator expected (previous token underlined)
+
+1: ... vd" jslog="64793; track:impression" data-token="AODP23YAAAAjUiEI ...
+                 ------------------------- ^
+found bareword where operator expected (previous token underlined)
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space between quote modifiers and trailing keywords.
+1: 
+1: Partial match to quote modifier [msixpodualngc] at word: 'div'
+1: Please put a space be

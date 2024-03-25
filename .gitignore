@@ -1,12 +1,21 @@
-.youtubeToken
-config/config.js
-config/google_credentials.js
+# Editor files
+.vscode/
+
+# Caches/Dependancies
 node_modules/
 __pycache__
-.vscode/
+
+# Private config files
+*/config/config.js
+*/config/google_credentials.js
+
+# NPM
 package-lock.json
 
+# Session files
+.youtubeToken
 cookies.txt
 
+# Misc
 *.png
 *.activity.*
